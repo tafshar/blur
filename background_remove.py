@@ -1,5 +1,6 @@
-import cv2
 import numpy as np
+import cv2
+
 
 def remove_background(image_path, output_path):
   """Removes the background from an image.
@@ -31,7 +32,11 @@ def remove_background(image_path, output_path):
 
   # Create a transparent background
   bg_transparent = np.zeros_like(img, np.uint8)
-  bg_transparent[:, :] = (0, 0, 0, 0)  # Set alpha channel to 0 for transparency
+  bg_transparent = cv2.cvtColor(bg_transparent, cv2.COLOR_BGR2BGRA) 
+  bg_transparent[:, :, 3] = 0 # Set alpha channel to 0 for transparency
+
+  bg_removed = cv2.resize(bg_removed, (bg_transparent.shape[1], bg_transparent.shape[0]))
+  bg_removed = cv2.cvtColor(bg_removed, cv2.COLOR_BGR2BGRA)
 
   # Combine the foreground with the transparent background
   final_image = cv2.addWeighted(bg_transparent, 1, bg_removed, 1, 0)
